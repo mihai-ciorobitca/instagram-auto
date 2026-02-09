@@ -1,36 +1,48 @@
-export async function scroll(page, {
-  minScroll = 300,
-  maxScroll = 1200,
-  minPause = 500,
-  maxPause = 3000,
-  iterations = 30
-} = {}) {
-  for (let i = 0; i < iterations; i++) {
-    // Random scroll distance
-    const scrollBy = Math.floor(
-      Math.random() * (maxScroll - minScroll) + minScroll
-    );
+import {
+    smoothScrollTo,
+    getArticleDelay,
+    maybeLikeArticle,
+    humanAdvanceCarousel,
+    wait,
+    getNextUntouchedArticle
+} from './utils.js';
 
-    await page.evaluate((y) => {
-      window.scrollBy({
-        top: y,
-        left: 0,
-        behavior: 'smooth',
-      });
-    }, scrollBy);
+export async function scroll(page) {
+    const scrollDuration = 1200;
+    let id = 1;
 
-    // Occasionally do a tiny adjustment scroll (very human)
-    if (Math.random() < 0.3) {
-      await page.waitForTimeout(300 + Math.random() * 400);
-      await page.evaluate(() => {
-        window.scrollBy({ top: -100, behavior: 'smooth' });
-      });
+    while (true) {
+        const articleHandle = await getNextUntouchedArticle(page, id);
+
+        if (!articleHandle) {
+            // No new articles yet → wait a bit and retry
+            await wait(500);
+            continue;
+        }
+
+        id++;
+
+        const rect = await articleHandle.evaluate(el => {
+            const r = el.getBoundingClientRect();
+            return { top: r.top, height: r.height };
+        });
+
+        const scrollY = await page.evaluate(() => window.scrollY);
+        const viewportHeight = await page.evaluate(() => window.innerHeight);
+
+        const targetY =
+            scrollY +
+            rect.top +
+            rect.height / 2 -
+            viewportHeight / 2;
+
+        await smoothScrollTo(page, targetY, scrollDuration);
+
+        const contentDelay = await getArticleDelay(articleHandle);
+
+        await wait(scrollDuration + contentDelay);
+        await maybeLikeArticle(articleHandle, 0.7);
+        await humanAdvanceCarousel(articleHandle);
+        await wait(contentDelay);
     }
-
-    // Random pause like reading a post
-    const pause = Math.floor(
-      Math.random() * (maxPause - minPause) + minPause
-    );
-    await page.waitForTimeout(pause);
-  }
 }

@@ -1,31 +1,26 @@
-import { humanLikeMouseMove } from "./utils.js";
-import { randomBetween } from "../utils/randomBetween.js"
+import { humanLikeMouseMove, randomTime, humanType } from "../functions/utils.js";
 
 export async function follow(page, username) {
-  await page.goto(`https://www.instagram.com/`, {
-    waitUntil: 'domcontentloaded',
-  });
-
-  await page.waitForTimeout(randomBetween(200, 600));
+  await page.waitForTimeout(randomTime(1000, 2000));
   const searchButton = page.locator('a').nth(4);
-  await page.waitForTimeout(randomBetween(200, 600));
+  await page.waitForTimeout(randomTime(1000, 2000));
   await searchButton.click()
 
-  await page.waitForTimeout(randomBetween(200, 600));
-  await page.keyboard.type(username, { delay: 1000 });
-  await page.waitForTimeout(randomBetween(200, 600));
+  const searchInput = page.locator('input[placeholder="Search"]');
+  await page.waitForTimeout(randomTime(1000, 2000));
+  await humanType(searchInput, username);
+
+  await page.waitForTimeout(randomTime(1000, 2000));
   const firstUsername = page.locator(`a[href="/${username}/"]`).first()
-  await page.waitForTimeout(randomBetween(1000, 1500));
+  await page.waitForTimeout(randomTime(1000, 2000));
   await firstUsername.click();
 
-
   const followButton = page.locator('header').getByRole('button', { name: /^Follow$/ });
-
   await humanLikeMouseMove(page, followButton);
 
-  await page.waitForTimeout(randomBetween(200, 600));
+  await page.waitForTimeout(randomTime(1000, 2000));
   await followButton.click();
 
   const followingButton = page.getByRole('button', { name: 'Following' });
-  await followingButton.waitFor({ timeout: 15000 });
+  await followingButton.waitFor({ timeout: 10000 });
 }

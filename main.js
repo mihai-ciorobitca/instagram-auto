@@ -1,10 +1,11 @@
 import { chromium } from 'playwright';
-import { scroll } from "./functions/scroll.js";
-// import { follow } from "./functions/follow.js";
-// import { post } from "./functions/post.js"
-// import { like } from "./functions/like.js"
+import { reels } from "./functions/reels.js";
+import { follow } from "./functions/follow.js";
+import { post } from "./functions/post.js"
+import { like } from "./functions/like.js"
+import { scroll } from "./functions/scroll.js"
 
-async function main(username, captionText) {
+async function main() {
   const context = await chromium.launchPersistentContext(
     './ig-profile',
     {
@@ -22,21 +23,14 @@ async function main(username, captionText) {
 
   const page = await context.newPage();
 
-  await page.goto(`https://www.instagram.com/`, {
-    waitUntil: 'domcontentloaded',
-  })
+  // await page.goto(`https://www.instagram.com/`, {
+  //   waitUntil: 'domcontentloaded',
+  // })
 
-  await scroll();
-
-  // await post(page, captionText);
-  // await follow(page, username);
-
-  // await page.waitForTimeout(3000);
-
-  // await page.screenshot({ path: `./followed/${username}.png` });
-
-  // await page.close();
-  // await context.close();
+  // await post(page, "Hello world!", "post2.png");
+  // await follow(page, "chef_catalin_scarlatescu");
+  // await scroll(page);
+  await reels(page);
 }
 
-await main("brockman.ben", "Caption");
+await main();
