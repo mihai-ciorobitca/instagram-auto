@@ -5,7 +5,7 @@ import {
     humanAdvanceCarousel,
     wait,
     getNextUntouchedArticle
-} from './utils.js';
+} from './utils.mjs';
 
 export async function scroll(page) {
     const scrollDuration = 1200;

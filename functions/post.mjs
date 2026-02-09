@@ -1,4 +1,4 @@
-import { randomTime, humanType } from "./utils.js"
+import { randomTime, humanType } from "./utils.mjs"
 
 export async function post(page, captionText, imageName="post") {
     await page.waitForTimeout(randomTime(1000, 2000));

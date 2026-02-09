@@ -1,9 +1,9 @@
 import { chromium } from 'playwright';
-import { reels } from "./functions/reels.js";
-import { follow } from "./functions/follow.js";
-import { post } from "./functions/post.js"
-import { like } from "./functions/like.js"
-import { scroll } from "./functions/scroll.js"
+import { reels } from "./functions/reels.mjs";
+import { follow } from "./functions/follow.mjs";
+import { post } from "./functions/post.mjs"
+import { like } from "./functions/like.mjs"
+import { scroll } from "./functions/scroll.mjs"
 
 async function main() {
   const context = await chromium.launchPersistentContext(

@@ -1,4 +1,4 @@
-import { humanLikeMouseMove, randomTime, humanType } from "../functions/utils.js";
+import { humanLikeMouseMove, randomTime, humanType } from "./utils.mjs";
 
 export async function follow(page, username) {
   await page.waitForTimeout(randomTime(1000, 2000));
